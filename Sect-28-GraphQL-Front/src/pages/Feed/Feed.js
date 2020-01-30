@@ -62,7 +62,6 @@ class Feed extends Component {
               _id
               title
               content
-              imageUrl
               creator {
                 name
               }
@@ -72,7 +71,7 @@ class Feed extends Component {
           }
         }
       `
-    }
+    };
     fetch('http://localhost:8080/graphql', {
       method: 'POST',
       headers: {
@@ -85,9 +84,8 @@ class Feed extends Component {
         return res.json();
       })
       .then(resData => {
-        if(resData.errors) {
-          console.log(resData.errors)
-          throw new Error('Fetching posts failed.')
+        if (resData.errors) {
+          throw new Error('Fetching posts failed!');
         }
         this.setState({
           posts: resData.data.posts.posts.map(post => {
@@ -152,8 +150,8 @@ class Feed extends Component {
     });
     const formData = new FormData();
     formData.append('image', postData.image);
-    if(this.state.editPost) {
-      formData.append('oldPath', this.state.editPost.imagePath)
+    if (this.state.editPost) {
+      formData.append('oldPath', this.state.editPost.imagePath);
     }
     fetch('http://localhost:8080/post-image', {
       method: 'PUT',
@@ -162,17 +160,16 @@ class Feed extends Component {
       },
       body: formData
     })
-    .then(res => res.json())
-    .then(fileResData => {
-      const imageUrl = fileResData.filePath
-      let graphqlQuery = {
-        query: `
+      .then(res => console.log(res.json()))
+      .then(fileResData => {
+        console.log(fileResData)
+        const imageUrl = fileResData.filePath;
+        let graphqlQuery = {
+          query: `
           mutation {
-            createPost(postInput:{
-                title: "${postData.title}", 
-                content: "${postData.content}", 
-                imageUrl: "${imageUrl}"
-            }) {
+            createPost(postInput: {title: "${postData.title}", content: "${
+            postData.content
+          }", imageUrl: "${imageUrl}"}) {
               _id
               title
               content
@@ -184,28 +181,28 @@ class Feed extends Component {
             }
           }
         `
-      }
-  
-      return fetch('http://localhost:8080/graphql', {
-        method: 'POST',
-        body: JSON.stringify(graphqlQuery),
-        headers: {
-          Authorization: 'Bearer ' + this.props.token,
-          'Content-Type': 'application/json'
-        }
+        };
+
+        return fetch('http://localhost:8080/graphql', {
+          method: 'POST',
+          body: JSON.stringify(graphqlQuery),
+          headers: {
+            Authorization: 'Bearer ' + this.props.token,
+            'Content-Type': 'application/json'
+          }
+        });
       })
-    }).then(res => {
+      .then(res => {
         return res.json();
       })
       .then(resData => {
-        if(resData.errors && resData.errors[0].status === 422) {
+        if (resData.errors && resData.errors[0].status === 422) {
           throw new Error(
             "Validation failed. Make sure the email address isn't used yet!"
-          )
+          );
         }
-        if(resData.errors) {
-          console.log(resData.errors)
-          throw new Error('User login failed.')
+        if (resData.errors) {
+          throw new Error('User login failed!');
         }
         console.log(resData);
         const post = {
@@ -224,7 +221,7 @@ class Feed extends Component {
             );
             updatedPosts[postIndex] = post;
           } else {
-            updatedPosts.pop()
+            updatedPosts.pop();
             updatedPosts.unshift(post);
           }
           return {
