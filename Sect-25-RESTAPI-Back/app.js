@@ -4,7 +4,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const multer = require('multer')
-const uuidv4 = require('uuid/v4')
 
 const feedRoutes = require('./routes/feed')
 const authRoutes = require('./routes/auth')
@@ -13,10 +12,10 @@ const app = express()
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'images')
+    cb(null, 'images') // 'images' is the folder the file will be stored in.
   },
   filename: (req, file, cb) => {
-    cb(null, uuidv4())
+    cb(null, new Date().toISOString() + '-' + file.originalname)
   }
 })
 
@@ -34,9 +33,9 @@ const fileFilter = (req, file, cb) => {
 
 app.use(bodyParser.json()) // application/json
 app.use(multer({
-  storage: fileStorage, 
+  storage: fileStorage,
   fileFilter: fileFilter})
-  .single('image'))
+  .single('image')) // 'image' is the name of the input on the front end for selecting a file.
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use((req, res, next) => {

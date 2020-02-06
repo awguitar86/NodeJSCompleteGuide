@@ -127,10 +127,10 @@ class Feed extends Component {
     this.setState({
       editLoading: true
     });
-    const formData = new FormData()
-    formData.append('title', postData.title)
-    formData.append('content', postData.content)
-    formData.append('image', postData.image)
+    const formData = new FormData();
+    formData.append('title', postData.title);
+    formData.append('content', postData.content);
+    formData.append('image', postData.image); // 'image' is the name of the input and is the same name on the node server.
     let url = 'http://localhost:8080/feed/post';
     let method = 'POST';
     if (this.state.editPost) {

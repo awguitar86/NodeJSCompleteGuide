@@ -21,7 +21,7 @@ exports.getPosts = (req, res, next) => {
       res
         .status(200)
         .json({
-          message: 'Fetched Posts successfully', 
+          message: 'Fetched Posts successfully',
           posts: posts,
           totalItems: totalItems
         })
@@ -43,16 +43,16 @@ exports.createPost = (req, res, next) => {
   }
   if(!req.file) {
     const error = new Error('No image provided')
-    error.statusCode = 422
+    error.statusCode = 422 // 422 is a validation error
     throw error
   }
-  const imageUrl = req.file.path.replace("\\", "/")
+  const imageUrl = req.file.path
   const title = req.body.title
   const content = req.body.content
   let creator
   const post = new Post({
-    title: title, 
-    content: content, 
+    title: title,
+    content: content,
     imageUrl: imageUrl,
     creator: req.userId
   })
